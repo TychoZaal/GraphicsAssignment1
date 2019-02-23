@@ -16,20 +16,12 @@ public class MeshGenerator : MonoBehaviour
     public int xSize = 20;
     public int zSize = 20;
 
-    public int textureWidth = 1024;
-    public int textureHeight = 1024;
+    private float[] oldYValues;
 
-    public float noise01Scale = 2f;
-    public float noise01Amp = 2f;
-
-    public float noise02Scale = 4f;
-    public float noise02Amp = 4f;
-
-    public float noise03Scale = 6f;
-    public float noise03Amp = 6f;
+    public int perlinNoiseModifier = 2;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
@@ -41,9 +33,24 @@ public class MeshGenerator : MonoBehaviour
         UpdateMesh();
     }
 
-    void CreateShape()
+    private void CreateShape()
     {
         vertices = new Vector3[(xSize + 1) * (zSize + 1)];
+
+        oldYValues = new float[vertices.Length];
+
+        for (int i = 0, z = 0; z <= zSize; z++)
+        {
+            for (int x = 0; x <= xSize; x++)
+            {
+                StartCoroutine(Timer());
+                float newY = GetNewHeightValue(x, z);
+                float y = Mathf.Lerp(oldYValues[i], newY, 1f);
+                vertices[i] = new Vector3(x, y, z);
+                oldYValues[i] = y;
+                i++;
+            }
+        }
 
         triangles = new int[xSize * zSize * 6];
 
@@ -79,7 +86,7 @@ public class MeshGenerator : MonoBehaviour
         }
     }
 
-    void UpdateMesh()
+    private void UpdateMesh()
     {
         mesh.Clear();
 
@@ -88,5 +95,16 @@ public class MeshGenerator : MonoBehaviour
         mesh.uv = uvs;
 
         mesh.RecalculateNormals();
+    }
+
+    private IEnumerator Timer()
+    {
+        yield return new WaitForSeconds(3);
+    }
+
+    private float GetNewHeightValue(int x, int z)
+    {
+        float yPerlin = (float)Mathf.PerlinNoise(x * .3f, z * .3f) * perlinNoiseModifier;
+        return yPerlin;
     }
 }
