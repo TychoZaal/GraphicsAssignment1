@@ -16,38 +16,35 @@ public class MeshGenerator : MonoBehaviour
     public int xSize = 20;
     public int zSize = 20;
 
-    private float[] oldYValues;
-
-    public int perlinNoiseModifier = 2;
+    public float perlinNoiseModifier = 2;
+    public float waveModifier = .3f;
 
     // Start is called before the first frame update
     private void Start()
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
+
+        CreateShape();
     }
 
     private void Update()
     {
-        CreateShape();
         UpdateMesh();
+        MoveSea();
     }
 
     private void CreateShape()
     {
         vertices = new Vector3[(xSize + 1) * (zSize + 1)];
 
-        oldYValues = new float[vertices.Length];
-
         for (int i = 0, z = 0; z <= zSize; z++)
         {
             for (int x = 0; x <= xSize; x++)
             {
                 float newY = GetNewHeightValue(x, z);
-                float y = Mathf.Lerp(oldYValues[i], newY, 1f);
-                y += Mathf.Sin(z + Time.deltaTime);
-                vertices[i] = new Vector3(x, y, z);
-                oldYValues[i] = y;
+                newY += Mathf.Sin(z + Time.deltaTime);
+                vertices[i] = new Vector3(x, newY, z);
                 i++;
             }
         }
@@ -101,5 +98,14 @@ public class MeshGenerator : MonoBehaviour
     {
         float yPerlin = (float)Mathf.PerlinNoise(x * .3f, z * .3f) * perlinNoiseModifier;
         return yPerlin;
+    }
+
+    private void MoveSea()
+    {
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            float newY = GetNewHeightValue((int)vertices[i].x, (int)vertices[i].z);
+            newY += Mathf.Sin(vertices[i].z + Time.deltaTime);
+        }
     }
 }
