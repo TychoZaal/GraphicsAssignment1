@@ -294,11 +294,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46c3a49e9e5fe434a864c7fbecfeac35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 25
   xSize: 20
   zSize: 20
-  perlinNoiseModifier: 2
-  waveModifier: 0.003
+  perlinNoiseModifier: 0
+  densityAndRotation: 0.0005
 --- !u!23 &1852345296
 MeshRenderer:
   m_ObjectHideFlags: 0
