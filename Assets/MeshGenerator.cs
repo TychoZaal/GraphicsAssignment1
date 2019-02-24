@@ -43,9 +43,9 @@ public class MeshGenerator : MonoBehaviour
         {
             for (int x = 0; x <= xSize; x++)
             {
-                StartCoroutine(Timer());
                 float newY = GetNewHeightValue(x, z);
                 float y = Mathf.Lerp(oldYValues[i], newY, 1f);
+                y += Mathf.Sin(z + Time.deltaTime);
                 vertices[i] = new Vector3(x, y, z);
                 oldYValues[i] = y;
                 i++;
@@ -95,11 +95,6 @@ public class MeshGenerator : MonoBehaviour
         mesh.uv = uvs;
 
         mesh.RecalculateNormals();
-    }
-
-    private IEnumerator Timer()
-    {
-        yield return new WaitForSeconds(3);
     }
 
     private float GetNewHeightValue(int x, int z)
