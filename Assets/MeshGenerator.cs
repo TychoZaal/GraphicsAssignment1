@@ -13,6 +13,7 @@ public class MeshGenerator : MonoBehaviour
 
     public int xSize = 20;
     public int zSize = 20;
+    public int speed = 5;
 
     public float perlinNoiseModifier = 2;
     private float waveModifier = .3f;
@@ -23,12 +24,11 @@ public class MeshGenerator : MonoBehaviour
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
-
-        CreateShape();
     }
 
     private void Update()
     {
+        CreateShape();
         UpdateMesh();
         MoveSea();
     }
@@ -95,7 +95,7 @@ public class MeshGenerator : MonoBehaviour
     private float GetNewHeightValue(float x, float y, float z)
     {
         float newY = y; 
-        newY = Mathf.Sin(Time.time + x + y + z * densityAndRotation);
+        newY = Mathf.Sin(Time.time * speed + x + y + z * densityAndRotation);
         newY += Mathf.PerlinNoise(x * waveModifier, z * waveModifier) * perlinNoiseModifier;
         return newY;
     }
