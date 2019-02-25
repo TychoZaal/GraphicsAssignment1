@@ -11,8 +11,11 @@ public class MeshGenerator : MonoBehaviour
     int[] triangles;
     Vector2[] uvs;
 
+    [Range(1, 50)]
     public int xSize = 20;
+    [Range(1, 50)]
     public int zSize = 20;
+    [Range(1, 25)]
     public int speed = 5;
 
     public float perlinNoiseModifier = 2;
@@ -26,7 +29,7 @@ public class MeshGenerator : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         CreateShape();
         UpdateMesh();
